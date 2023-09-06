@@ -1,0 +1,80 @@
+{
+  "openapi" : "3.0.0",
+  "info" : {
+    "title" : "int-atradiuschannels-hello-sapi",
+    "description" : "int-atradiuschannels-hello-sapi",
+    "version" : "1.0"
+  },
+  "servers" : [ {
+    "url" : "https://virtserver.swaggerhub.com/AtradiusWS/int-atradiuschannels-hello-sapi/1.0",
+    "description" : "SwaggerHub API Auto Mocking"
+  } ],
+  "security" : [ {
+    "ApiKeyAuth" : [ ]
+  } ],
+  "paths" : {
+    "/hello/{name}" : {
+      "get" : {
+        "description" : "say hello",
+        "operationId" : "sayHello",
+        "parameters" : [ {
+          "name" : "name",
+          "in" : "path",
+          "description" : "name of the individual to say hello to",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Message"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "ApiKeyAuth" : [ ]
+        } ],
+        "x-amazon-apigateway-integration" : {
+          "uri" : "arn:aws:apigateway:${aws_region}:lambda:path/2015-03-31/functions/${get_lambda_arn}/invocations",
+          "passthroughBehavior" : "when_no_match",
+          "httpMethod" : "POST",
+          "timeoutInMillis" : "${lambda_identity_timeout}",
+          "type" : "aws_proxy",
+          "contentHandling" : "CONVERT_TO_TEXT"
+        },
+        "x-amazon-apigateway-auth" : {
+          "type" : "NONE"
+        },
+        "x-amazon-apigateway-api-key-source" : "HEADER"
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "Message" : {
+        "type" : "object",
+        "properties" : {
+          "message" : {
+            "type" : "string"
+          }
+        }
+      }
+    },
+    "securitySchemes" : {
+      "ApiKeyAuth" : {
+        "type" : "apiKey",
+        "name" : "x-api-key",
+        "in" : "header"
+      }
+    }
+  }
+}
